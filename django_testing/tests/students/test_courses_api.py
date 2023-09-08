@@ -3,9 +3,6 @@ from rest_framework.test import APIClient
 from model_bakery import baker
 from students.models import Course, Student
 
-import warnings
-warnings.filterwarnings(action="ignore")
-
 @pytest.fixture
 def user():
     return APIClient()
@@ -68,7 +65,7 @@ def test_course_create(client):
     assert response.status_code == 201
     
 @pytest.mark.django_db #тест успешного обновления курса
-def test_course_create(client, course_factory):   
+def test_course_update(client, course_factory):   
     student = Student.objects.create(name='Student_1', birth_date='1993-01-10')
     course = course_factory(_quantity=4)
     response = client.patch(f'/api/v1/courses/{course[0].id}/', data={
@@ -79,7 +76,7 @@ def test_course_create(client, course_factory):
     assert data['students'] == [student.id]
     
 @pytest.mark.django_db #тест успешного удаления курса
-def test_course_create(client, course_factory):
+def test_course_delete(client, course_factory):
     course = course_factory(_quantity=4)
     response = client.delete(f'/api/v1/courses/{course[0].id}/')
     assert response.status_code == 204
